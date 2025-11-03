@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriNews - Farming Product Updates</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #232924;
+            --primary-light: #4caf50;
+            --primary-dark: #042606;
+            --secondary: #ff9800;
+            --accent: #8bc34a;
+            --light: #f1f8e9;
+            --dark: #001b02;
+            --text: #333;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            position: relative;
+        }
+        
+        nav ul li {
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        nav ul li a:hover, nav ul li a.active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 250px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 1000;
+        }
+        
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-content a {
+            color: var(--text) !important;
+            padding: 12px 20px !important;
+            border-radius: 0 !important;
+            display: flex !important;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-content a:hover {
+            background: var(--light) !important;
+            color: var(--primary) !important;
+        }
+        
+        .dropdown-content a i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #e68900;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin: 2.5rem 0;
+            color: var(--dark);
+            position: relative;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+        
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .news-card.featured {
+            grid-column: span 2;
+            display: flex;
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        /* Zoom button (appears over image) and modal styles */
+        .news-card { position: relative; }
+        .zoom-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            font-size: 18px;
+        }
+
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            padding: 20px;
+        }
+        .image-modal.active { display: flex; }
+        .image-modal img {
+            max-width: 95%;
+            max-height: 85%;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+        .image-modal .caption {
+            margin-top: 12px;
+            color: #fff;
+            text-align: center;
+            max-width: 95%;
+        }
+        .image-modal .close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        
+        .news-card.featured .news-image {
+            width: 40%;
+            height: auto;
+        }
+        
+        .news-card:hover .news-image {
+            transform: scale(1.05);
+        }
+        
+        .news-content {
+            padding: 20px;
+            position: relative;
+        }
+        
+        .news-category {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .news-category.seeds { background: var(--primary-light); }
+        .news-category.fertilizers { background: #ff9800; }
+        .news-category.equipment { background: #795548; }
+        .news-category.irrigation { background: #2196f3; }
+        .news-category.pesticides { background: #f44336; }
+        
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+        
+        .news-excerpt {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .news-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Product Highlights */
+        .product-highlights {
+            background: var(--light);
+            padding: 3rem 0;
+            margin: 3rem 0;
+        }
+        
+        .highlight-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .highlight-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .highlight-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .highlight-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .highlight-card h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            border-radius: 15px;
+            margin: 3rem 0;
+        }
+        
+        .newsletter h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .newsletter-form button:hover {
+            background: #e68900;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .news-card.featured {
+                grid-column: span 1;
+                flex-direction: column;
+            }
+            
+            .news-card.featured .news-image {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .mobile-menu {
+                display: block;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero {
+                padding: 3rem 0;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .newsletter-form input,
+            .newsletter-form button {
+                border-radius: 30px;
+                width: 100%;
+            }
+            
+            /* Mobile dropdown adjustments */
+            .dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                background: transparent;
+                display: none;
+            }
+            
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+            
+            .dropdown-content a {
+                color: white !important;
+                padding-left: 30px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-tractor"></i>
+                    <span>Phoenix Plants Lifesaver Pvt. Ltd.</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#">Products <i class="fas fa-chevron-down"></i></a>
+                            <div class="dropdown-content">
+                                <a href="#"><i class="fas fa-seedling"></i> --- Select ---</a>
+                                <a href="product1.html"><i class="fas fa-flask"></i> Primary Fertilizers</a>
+                                <a href="product2.html"><i class="fas fa-spray-can"></i> Water Soluble Fertilizers</a>
+                                <a href="product3.html"><i class="fas fa-tractor"></i> Micronutrient Fertilizer</a>
+                                <a href="product4.html"><i class="fas fa-tint"></i> Advance Fertilizer</a>
+                            </div>
+                        </li>
+                        <li><a href="#Tips">Farming Tips</a></li>
+                        <!-- <li><a href="#">Market Prices</a></li> -->
+                        <li><a href="#Contact">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Latest Agricultural Product News</h1>
+            <p>Stay updated with the newest farming products, techniques, and innovations to maximize your harvest and profits.</p>
+            <a href="#news" class="btn">Explore Latest News</a>
+        </div>
+    </section>
+    <div id="Tips" class="container">
+         <section class="product-highlights">
+            <div class="container">
+                <h2 class="page-title">Why Choose Our Products?</h2>
+                <div class="highlight-cards">
+                    <div class="highlight-card">
+                        <i class="fas fa-seedling"></i>
+                        <h3>High Yield Seeds</h3>
+                        <p>Genetically superior seeds that guarantee better germination and higher productivity.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <i class="fas fa-flask"></i>
+                        <h3>Organic Fertilizers</h3>
+                        <p>Eco-friendly fertilizers that enrich soil without harmful chemicals.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <i class="fa-solid fa-building-wheat"></i>
+                        <h3>Modern Equipment</h3>
+                        <p>Latest farming tools designed to reduce labor and increase efficiency.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <i class="fas fa-hand-holding-water"></i>
+                        <h3>Smart Irrigation</h3>
+                        <p>Water-saving systems that deliver precise amounts to your crops.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="newsletter">
+            <div class="container">
+                <h2>Subscribe to Our Farmer's Newsletter</h2>
+                <p>Get weekly updates on new products, farming techniques, and exclusive offers directly to your inbox.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div id="Contact" class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Phoenix Plants Lifesaver Pvt. Ltd.</h3>
+                    <p>Welcome to [Your Company Name] – Nurturing Growth, Enriching Soil, Empowering Farmers. Our company aims to bring innovation in agriculture and provide farmers with high quality fertilizers that increase soil fertility and improve crop quality.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Products</a></li>
+                        <li><a href="#">Farming Tips</a></li>
+                        <li><a href="#">Market Prices</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Regd. Office : S.NO. COD, 3rd Floor, Dharampali Palace Bhoja Market,0 Atta-Sector-27, Noida-201301 (U.P.) INDIA</li>
+                        <li><i class="fas fa-phone"></i>Toll Free No. 1800 569 3914</li>
+                        <li><i class="fas fa-envelope"></i>Mail id : - support@phoenixplantslifesaverpvtltd.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM-6PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2022 Phoenix Plants Lifesaver Pvt. Ltd. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Agriculture-focused news data (added `url` for each item)
+        const newsData = [
+            {
+                id: 1,
+                title: "Phino-16 की कहानी किसानो की जुबानी",
+                url: "https://www.khojinews.co.in/national-international/crop-nutrition-revolution-phin-16-farm-production-long-term-soil-health-1433540",
+                category: "News",
+                content: "फसलों की पोषण क्रांति फिनो -16 खेतों में उत्पादन- मिट्टी की लम्बी सेहत.",
+                image: "news1.webp",
+                date: "2023-10-15",
+                author: "Pheonix Plants Lifesaver Pvt. Ltd.",
+                featured: true
+            },
+            {
+                id: 2,
+                title: "Organic Fertilizer Formula Reduces Chemical Use by 40%",
+                url: "https://www.aurguru.com/phoenix-plants-lifesaver-pvt-ltd-new-model-agricultural-september-2025",
+                category: "fertilizers",
+                content: "Our new organic fertilizer blend enriches soil naturally while significantly reducing the need for chemical additives. Early adopters report healthier crops.",
+                image: "new2.jpg",
+                date: "2023-10-14",
+                author: "Soil Scientist",
+                featured: false
+            },
+            {
+                id: 3,
+                title: "शुद्धता एवं समृद्धि का प्रतिक ...!",
+                url: "https://youtu.be/_WcSpDZ3Zz4?feature=shared",
+                category: "Phino-16",
+                content: "A symbol of purity and prosperity...!  This phrase refers to an object, institution, or idea that embodies purity, cleanliness, and moral values, as well as prosperity, growth, and well-being . This line conveys the message that the product or institution in question is not only a leader in quality and reliability , but also a symbol of progress and positivity .",
+                image: "new3.jpg",
+                date: "2023-10-13",
+                author: "Irrigation Specialist",
+                featured: false
+            },
+            {
+                id: 4,
+                title: "We Are Proud To Be Associated With Phoenix Plants Lifesaver Pvt. Ltd.",
+                url: "https://vijaybharat.in/operating-under-the-fco-guidelines-of-the-government-of-india-phoenix-plants-lifesaver-pvt-ltd-has-carved-a-unique-niche-for-itself-in-the-core-fertilizer-sector/",
+                category: "equipment",
+                content: "NPK stands for Nitrogen (N), Phosphorus (P), and Potassium (K). The numbers 22:22:11 represent the percentage of each nutrient in the fertilizer. ",
+                image: "new4.jpg",
+                date: "2023-10-12",
+                author: "Kaithal Farmer Happy with Us",
+                featured: true
+            },
+            
+        ];
+
+        // DOM elements
+        const newsContainer = document.querySelector('.news-grid');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const nav = document.querySelector('nav');
+        const dropdowns = document.querySelectorAll('.dropdown');
+
+        // Display news articles
+        function displayNews() {
+            newsContainer.innerHTML = '';
+            
+                newsData.forEach(news => {
+                    const newsCard = document.createElement('div');
+                    newsCard.className = `news-card ${news.featured ? 'featured' : ''}`;
+                    // wrap the card content in an anchor so whole card is clickable
+                    newsCard.innerHTML = `
+                        <a href="${news.url || '#'}" target="_blank" rel="noopener noreferrer" style="color:inherit; text-decoration:none; display:block;">
+                            <div style="position:relative;">
+                                <button class="zoom-btn" title="View image" aria-label="View image">🔍</button>
+                                <img src="${news.image}" alt="${news.title}" class="news-image">
+                            </div>
+                            <div class="news-content">
+                                <span class="news-category ${news.category}">${news.category}</span>
+                                <h3 class="news-title">${news.title}</h3>
+                                <p class="news-excerpt">${news.content.substring(0, 100)}...</p>
+                                <div class="news-meta">
+                                    <span class="news-date"><i class="far fa-calendar"></i> ${news.date}</span>
+                                    <span class="news-author"><i class="far fa-user"></i> ${news.author}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                    newsContainer.appendChild(newsCard);
+                });
+        }
+
+        // Mobile menu toggle
+        mobileMenu.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+
+        // Mobile dropdown toggle
+        if (window.innerWidth <= 768) {
+            dropdowns.forEach(dropdown => {
+                const link = dropdown.querySelector('a');
+                link.addEventListener('click', (e) => {
+                    if (dropdown.classList.contains('dropdown')) {
+                        e.preventDefault();
+                        dropdown.classList.toggle('active');
+                    }
+                });
+            });
+        }
+
+        // Newsletter form submission
+        const newsletterForm = document.querySelector('.newsletter-form');
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = newsletterForm.querySelector('input').value;
+            alert(`Thank you for subscribing with ${email}! You'll receive our next farming update soon.`);
+            newsletterForm.reset();
+        });
+
+        // Initialize the page
+        function init() {
+            displayNews();
+        }
+
+        // Setup image modal handlers (zoom)
+        function setupImageModal() {
+            const modal = document.createElement('div');
+            modal.className = 'image-modal';
+            modal.id = 'imageModal';
+            modal.innerHTML = `
+                <button class="close-btn" id="modalClose" aria-label="Close">×</button>
+                <img id="modalImg" src="" alt="">
+                <div class="caption" id="modalCaption"></div>
+            `;
+            document.body.appendChild(modal);
+
+            const modalImg = document.getElementById('modalImg');
+            const modalCaption = document.getElementById('modalCaption');
+            const modalClose = document.getElementById('modalClose');
+
+            // Open modal when clicking image or zoom button. Prevent following the article link.
+            document.querySelector('.news-grid').addEventListener('click', function(e) {
+                const target = e.target;
+                // if zoom button or image clicked
+                if (target.classList.contains('zoom-btn') || target.classList.contains('news-image')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // find the closest anchor (the card link)
+                    const anchor = target.closest('a');
+                    const img = anchor ? anchor.querySelector('.news-image') : target;
+                    const titleEl = anchor ? anchor.querySelector('.news-title') : null;
+                    const src = img ? img.src : null;
+                    const title = titleEl ? titleEl.textContent : '';
+                    if (src) {
+                        modalImg.src = src;
+                        modalImg.alt = title || 'News image';
+                        modalCaption.textContent = title || '';
+                        modal.classList.add('active');
+                        modal.setAttribute('aria-hidden', 'false');
+                    }
+                }
+            });
+
+            // Close modal
+            modalClose.addEventListener('click', function() {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+                modalImg.src = '';
+                modalCaption.textContent = '';
+            });
+
+            // Close when clicking backdrop
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    modal.setAttribute('aria-hidden', 'true');
+                    modalImg.src = '';
+                    modalCaption.textContent = '';
+                }
+            });
+            // close with Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                    modal.setAttribute('aria-hidden', 'true');
+                    modalImg.src = '';
+                    modalCaption.textContent = '';
+                }
+            });
+        }
+
+        // Run initialization when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            setupImageModal();
+        });
+    </script>
+</body>
+</html>
